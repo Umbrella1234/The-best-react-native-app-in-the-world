@@ -3,8 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { FC } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Provider } from "react-redux";
 import { RootStackParamList, ScreenNames } from "./src/constants/routing";
 import { queryClient } from "./src/queryClient";
 import { Home } from "./src/screens/Home/Home";

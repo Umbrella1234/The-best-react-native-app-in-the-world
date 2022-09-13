@@ -13,9 +13,16 @@ export const getEmployees = () =>
   delayedPromiseFactoryFn<EmployeesMap>({
     1: {
       avatar: null,
-      email: "haha@mail.ru",
-      name: "my name",
-      surname: "my surname",
+      email: "privateBlackHole@pinkLagoon.com",
+      name: "Billy",
+      surname: "Herrington",
       id: "1",
+    },
+    2: {
+      avatar: null,
+      email: "bigBlackSword@pinkLagoon.com",
+      name: "Van",
+      surname: "Darkholme",
+      id: "2",
     },
   } as EmployeesMap);
