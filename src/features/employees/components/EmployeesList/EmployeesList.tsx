@@ -14,16 +14,14 @@ export type EmployeesListProps = {
 
 export const EmployeesList: FC<EmployeesListProps> = ({ employees }) => {
   return (
-    <ScrollView>
-      <View>
-        {employees.map((employee, i) => {
-          return (
-            <StyledEmployeesListItemWrapper isFirst={i === 0}>
-              <EmployeeListItem key={employee.id} employee={employee} />
-            </StyledEmployeesListItemWrapper>
-          );
-        })}
-      </View>
-    </ScrollView>
+    <View>
+      {employees.map((employee, i) => {
+        return (
+          <StyledEmployeesListItemWrapper isFirst={i === 0}>
+            <EmployeeListItem key={employee.id} employee={employee} />
+          </StyledEmployeesListItemWrapper>
+        );
+      })}
+    </View>
   );
 };

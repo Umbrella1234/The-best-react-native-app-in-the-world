@@ -1,7 +1,20 @@
 import styled from "styled-components/native";
+import {
+  TouchableOpacity,
+  GestureResponderEvent,
+  LayoutChangeEvent,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Employee } from "../../../../types/entities/Employee";
-import { FC } from "react";
+import { FC, useState, useRef } from "react";
+import {
+  ContextMenu,
+  ContextMenuProps,
+} from "../../../../components/primitives/ContextMenu/ContextMenu";
+import { ContextMenuItem } from "../../../../components/primitives/ContextMenu/ContextMenuItem";
+import { useNavigation } from "@react-navigation/native";
+import { ScreenNames } from "../../../../constants/routing";
+import { EditEmployeeNativeStackScreenProps } from "../../../../screens/Home/EditEmployee";
 
 const StyledEmployee = styled.View`
   display: flex;
@@ -20,7 +33,7 @@ const StyledEmployeeInfo = styled.Text`
   display: flex;
 `;
 
-const StyledEmployeeMenuIcon = styled(MaterialCommunityIcons)`
+const StyledEmployeeMenuIconWrapper = styled.View`
   margin-left: auto;
 `;
 
@@ -29,17 +42,77 @@ type EmployeeListItemProps = {
 };
 
 export const EmployeeListItem: FC<EmployeeListItemProps> = ({ employee }) => {
-  const { avatar, email, name, surname } = employee;
+  const navigation =
+    useNavigation<EditEmployeeNativeStackScreenProps["navigation"]>();
+  const { avatar, email, name, surname, id } = employee;
+  const [menuCoords, setMenuCoords] = useState<
+    ContextMenuProps["coords"] | null
+  >(null);
+  const [iconDimensions, setIconDimensions] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
+  const iconRef = useRef<any>(null);
+
+  const hideContextMenu = () => {
+    setMenuCoords(null);
+  };
+
+  const handleContextMenuIconClick = (e: GestureResponderEvent) => {
+    if (!iconDimensions) return;
+    const { pageY, locationX } = e.nativeEvent;
+    setMenuCoords({
+      right: locationX + iconDimensions.width,
+      top: pageY + iconDimensions.height,
+    });
+  };
+
+  const handleIconLayout = (e: LayoutChangeEvent) => {
+    const {
+      nativeEvent: {
+        layout: { height, width },
+      },
+    } = e;
+    setIconDimensions({ height, width });
+  };
+
+  const handleEditOptionSelection = () => {
+    hideContextMenu();
+    navigation.navigate(ScreenNames.EditEmployee, { employeeId: id });
+  };
+
+  const handleDeleteOptionSelection = () => {
+    hideContextMenu();
+  };
+
   return (
     <StyledEmployee>
       <StyledEmployeeInfo>
         {name} {surname}
       </StyledEmployeeInfo>
-      <StyledEmployeeMenuIcon
-        name="menu"
-        size={28}
-        color="#010101"
-      ></StyledEmployeeMenuIcon>
+      <StyledEmployeeMenuIconWrapper ref={iconRef}>
+        <TouchableOpacity onPress={handleContextMenuIconClick}>
+          <MaterialCommunityIcons
+            onLayout={handleIconLayout}
+            name="menu"
+            size={28}
+            color="#010101"
+          ></MaterialCommunityIcons>
+        </TouchableOpacity>
+      </StyledEmployeeMenuIconWrapper>
+      {!!menuCoords && (
+        <ContextMenu onOverlayPress={hideContextMenu} coords={menuCoords}>
+          <ContextMenuItem
+            text="Edit"
+            hasBottomBorder
+            onPress={handleEditOptionSelection}
+          />
+          <ContextMenuItem
+            text="Delete"
+            onPress={handleDeleteOptionSelection}
+          />
+        </ContextMenu>
+      )}
     </StyledEmployee>
   );
 };
