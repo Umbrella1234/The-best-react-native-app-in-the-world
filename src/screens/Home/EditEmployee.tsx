@@ -1,12 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { getEmployees } from "../../features/employees/api/getEmployees";
 import { Queries } from "../../queryClient";
-import { EmployeesArr, EmployeesMap } from "../../types/entities/Employee";
 import { UILoader } from "../../components/primitives/UILoader/UILoader";
 import { StyledAppContainer } from "../../components/styledComponents/StyledAppContainer";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList, ScreenNames } from "../../constants/routing";
-import { Text } from "react-native";
+import {
+  EditEmployeeForm,
+  EditEmployeeFormProps,
+} from "../../features/employees/components/EditEmployeeForm/EditEmployeeForm";
+import { pick } from "lodash";
 
 export type EditEmployeeNativeStackScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -20,18 +23,24 @@ export const EditEmployee = ({
     params: { employeeId },
   },
 }: EditEmployeeProps) => {
-  const { data: employees = [], status } = useQuery<
-    EmployeesMap,
-    unknown,
-    EmployeesArr
-  >([Queries.Employees], getEmployees, {
-    select: (employeesMap) => Object.values(employeesMap),
-  });
+  const { data: employees = {}, status } = useQuery(
+    [Queries.Employees],
+    getEmployees
+  );
+
+  const employee = employees[employeeId];
+
+  if (!employee) return null;
+
+  const initialFormData: EditEmployeeFormProps["initialValues"] = pick(
+    employee,
+    ["avatar", "email", "name", "surname"]
+  );
 
   return (
     <StyledAppContainer>
       <UILoader status={status}>
-        <Text>edit {employeeId}</Text>
+        <EditEmployeeForm initialValues={initialFormData} />
       </UILoader>
     </StyledAppContainer>
   );

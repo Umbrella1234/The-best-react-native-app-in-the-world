@@ -9,6 +9,7 @@ import { Home } from "./src/screens/Home/Home";
 import { PortalProvider, WhitePortal } from "react-native-portal";
 import { PortalHosts } from "./src/constants/portals";
 import { EditEmployee } from "./src/screens/Home/EditEmployee";
+import { CreateEmployee } from "./src/screens/Home/CreateEmployee";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -23,7 +24,7 @@ export default function App() {
             <Stack.Screen name={ScreenNames.Home} component={Home} />
             <Stack.Screen
               name={ScreenNames.CreateEmployee}
-              component={ComponentMock}
+              component={CreateEmployee}
             />
             <Stack.Screen
               name={ScreenNames.EditEmployee}

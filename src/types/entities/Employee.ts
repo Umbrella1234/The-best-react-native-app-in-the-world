@@ -6,5 +6,9 @@ export interface Employee {
   id: string;
 }
 
+export type EditableEmployeeFields = Pick<
+  Employee,
+  "avatar" | "email" | "name" | "surname"
+>;
 export type EmployeesMap = Record<string, Employee>;
 export type EmployeesArr = Array<Employee>;

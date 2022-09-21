@@ -2,6 +2,7 @@ import { StyledAppContainer } from "../../components/styledComponents/StyledAppC
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList, ScreenNames } from "../../constants/routing";
 import { Text } from "react-native";
+import { EditEmployeeForm } from "../../features/employees/components/EditEmployeeForm/EditEmployeeForm";
 
 export type CreateEmployeeNativeStackScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -11,7 +12,7 @@ export type CreateEmployeeNativeStackScreenProps = NativeStackScreenProps<
 export const CreateEmployee = () => {
   return (
     <StyledAppContainer>
-      <Text>form</Text>
+      <EditEmployeeForm />
     </StyledAppContainer>
   );
 };
