@@ -24,7 +24,10 @@ const StyledButtonWrapper = styled.View`
   margin-top: 20px;
 `;
 
-export type EditEmployeeFormProps = { initialValues?: EditableEmployeeFields };
+export type EditEmployeeFormProps = {
+  initialValues?: EditableEmployeeFields;
+  onSubmit: (formData: EditableEmployeeFields) => void;
+};
 
 const initialFormState: EditableEmployeeFields = {
   avatar: null,
@@ -36,16 +39,18 @@ const initialFormState: EditableEmployeeFields = {
 //@todo add avatar
 export const EditEmployeeForm: FC<EditEmployeeFormProps> = ({
   initialValues = initialFormState,
+  onSubmit,
 }) => {
-  const { isValid, values, handleChange, handleBlur, errors, handleSubmit } =
-    useFormik({
-      initialValues,
-      validateOnBlur: true,
-      validationSchema: EmployeeSchema,
-      onSubmit: (formData) => {
-        console.log(formData);
-      },
-    });
+  const { isValid, values, handleChange, handleBlur, errors } = useFormik({
+    initialValues,
+    validateOnBlur: true,
+    validationSchema: EmployeeSchema,
+    onSubmit: (formData) => {
+      console.log(formData);
+    },
+  });
+
+  const handleSubmit = () => onSubmit(values);
 
   return (
     <View>
@@ -74,11 +79,7 @@ export const EditEmployeeForm: FC<EditEmployeeFormProps> = ({
         />
       </FormGroup>
       <StyledButtonWrapper>
-        <Button
-          disabled={!isValid}
-          onPress={() => handleSubmit()}
-          title="Submit"
-        />
+        <Button disabled={!isValid} onPress={handleSubmit} title="Submit" />
       </StyledButtonWrapper>
     </View>
   );

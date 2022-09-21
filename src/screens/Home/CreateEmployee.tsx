@@ -1,8 +1,11 @@
 import { StyledAppContainer } from "../../components/styledComponents/StyledAppContainer";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList, ScreenNames } from "../../constants/routing";
-import { Text } from "react-native";
-import { EditEmployeeForm } from "../../features/employees/components/EditEmployeeForm/EditEmployeeForm";
+import {
+  EditEmployeeForm,
+  EditEmployeeFormProps,
+} from "../../features/employees/components/EditEmployeeForm/EditEmployeeForm";
+import { createEmployee } from "../../features/employees/api/createEmployee";
 
 export type CreateEmployeeNativeStackScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -10,9 +13,14 @@ export type CreateEmployeeNativeStackScreenProps = NativeStackScreenProps<
 >;
 
 export const CreateEmployee = () => {
+  //@todo add react query mutation
+  const handleSubmit: EditEmployeeFormProps["onSubmit"] = (employeeData) => {
+    createEmployee({ employeeData });
+  };
+
   return (
     <StyledAppContainer>
-      <EditEmployeeForm />
+      <EditEmployeeForm onSubmit={handleSubmit} />
     </StyledAppContainer>
   );
 };

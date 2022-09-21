@@ -10,6 +10,7 @@ import {
   EditEmployeeFormProps,
 } from "../../features/employees/components/EditEmployeeForm/EditEmployeeForm";
 import { pick } from "lodash";
+import { editEmployee } from "../../features/employees/api/editEmployee";
 
 export type EditEmployeeNativeStackScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -37,10 +38,18 @@ export const EditEmployee = ({
     ["avatar", "email", "name", "surname"]
   );
 
+  //@todo add react query mutation
+  const handleSubmit: EditEmployeeFormProps["onSubmit"] = (employeeData) => {
+    editEmployee({ employeeData, id: employeeId });
+  };
+
   return (
     <StyledAppContainer>
       <UILoader status={status}>
-        <EditEmployeeForm initialValues={initialFormData} />
+        <EditEmployeeForm
+          onSubmit={handleSubmit}
+          initialValues={initialFormData}
+        />
       </UILoader>
     </StyledAppContainer>
   );

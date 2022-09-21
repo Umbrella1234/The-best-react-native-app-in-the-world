@@ -15,6 +15,7 @@ import { ContextMenuItem } from "../../../../components/primitives/ContextMenu/C
 import { useNavigation } from "@react-navigation/native";
 import { ScreenNames } from "../../../../constants/routing";
 import { EditEmployeeNativeStackScreenProps } from "../../../../screens/Home/EditEmployee";
+import { deleteEmployee } from "../../api/deleteEmployee";
 
 const StyledEmployee = styled.View`
   display: flex;
@@ -44,7 +45,7 @@ type EmployeeListItemProps = {
 export const EmployeeListItem: FC<EmployeeListItemProps> = ({ employee }) => {
   const navigation =
     useNavigation<EditEmployeeNativeStackScreenProps["navigation"]>();
-  const { avatar, email, name, surname, id } = employee;
+  const { name, surname, id } = employee;
   const [menuCoords, setMenuCoords] = useState<
     ContextMenuProps["coords"] | null
   >(null);
@@ -81,7 +82,8 @@ export const EmployeeListItem: FC<EmployeeListItemProps> = ({ employee }) => {
     navigation.navigate(ScreenNames.EditEmployee, { employeeId: id });
   };
 
-  const handleDeleteOptionSelection = () => {
+  const handleDeleteOptionSelection = async () => {
+    await deleteEmployee({ employeeId: id });
     hideContextMenu();
   };
 

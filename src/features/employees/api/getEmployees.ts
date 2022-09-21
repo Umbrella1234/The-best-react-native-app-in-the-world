@@ -1,28 +1,45 @@
-import { delay } from "lodash";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AsyncStorageKeys } from "../../../constants/asyncStorage";
 import { EmployeesMap } from "../../../types/entities/Employee";
+import { delayedPromiseFactoryFn } from "../../../utils/delayedPromiseFactoryFn";
 
-const FAKE_DELAY_MS = 2000;
+const defaultEmployees: EmployeesMap = {
+  1: {
+    avatar: null,
+    email: "privateBlackHole@pinkLagoon.com",
+    name: "Billy",
+    surname: "Herrington",
+    id: "1",
+  },
+  2: {
+    avatar: null,
+    email: "bigBlackSword@pinkLagoon.com",
+    name: "Van",
+    surname: "Darkholme",
+    id: "2",
+  },
+};
 
-// creates a promise that resolves with provided function argument after a delay
-const delayedPromiseFactoryFn = <T>(resolveValue: T) =>
-  new Promise<T>((resolve) =>
-    delay(() => resolve(resolveValue), FAKE_DELAY_MS)
+export const getEmployees = async () => {
+  const asyncStorageEmployeesJSON = await AsyncStorage.getItem(
+    AsyncStorageKeys.Employees
   );
 
-export const getEmployees = () =>
-  delayedPromiseFactoryFn<EmployeesMap>({
-    1: {
-      avatar: null,
-      email: "privateBlackHole@pinkLagoon.com",
-      name: "Billy",
-      surname: "Herrington",
-      id: "1",
-    },
-    2: {
-      avatar: null,
-      email: "bigBlackSword@pinkLagoon.com",
-      name: "Van",
-      surname: "Darkholme",
-      id: "2",
-    },
-  } as EmployeesMap);
+  let result: EmployeesMap = {};
+
+  if (!asyncStorageEmployeesJSON) {
+    await AsyncStorage.setItem(
+      AsyncStorageKeys.Employees,
+      JSON.stringify(defaultEmployees)
+    );
+    result = defaultEmployees;
+  } else {
+    try {
+      result = JSON.parse(asyncStorageEmployeesJSON);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  return delayedPromiseFactoryFn<EmployeesMap>(result);
+};

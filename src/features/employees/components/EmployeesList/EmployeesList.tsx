@@ -17,8 +17,8 @@ export const EmployeesList: FC<EmployeesListProps> = ({ employees }) => {
     <View>
       {employees.map((employee, i) => {
         return (
-          <StyledEmployeesListItemWrapper isFirst={i === 0}>
-            <EmployeeListItem key={employee.id} employee={employee} />
+          <StyledEmployeesListItemWrapper key={employee.id} isFirst={i === 0}>
+            <EmployeeListItem employee={employee} />
           </StyledEmployeesListItemWrapper>
         );
       })}
