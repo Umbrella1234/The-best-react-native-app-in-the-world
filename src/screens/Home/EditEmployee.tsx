@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getEmployees } from "../../features/employees/api/getEmployees";
 import { Queries } from "../../queryClient";
 import { UILoader } from "../../components/primitives/UILoader/UILoader";
@@ -11,6 +11,8 @@ import {
 } from "../../features/employees/components/EditEmployeeForm/EditEmployeeForm";
 import { pick } from "lodash";
 import { editEmployee } from "../../features/employees/api/editEmployee";
+import { useNavigation } from "@react-navigation/native";
+import { HomeNativeStackScreenProps } from "./Home";
 
 export type EditEmployeeNativeStackScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -24,10 +26,22 @@ export const EditEmployee = ({
     params: { employeeId },
   },
 }: EditEmployeeProps) => {
-  const { data: employees = {}, status } = useQuery(
-    [Queries.Employees],
-    getEmployees
+  const queryClient = useQueryClient();
+  const navigation = useNavigation<HomeNativeStackScreenProps["navigation"]>();
+
+  const { mutateAsync, status: editEmployeeStatus } = useMutation(
+    editEmployee,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([Queries.Employees]);
+      },
+    }
   );
+  const {
+    data: employees = {},
+    status: getEmployeesStatus,
+    isFetched: isGetEmployeesFetched,
+  } = useQuery([Queries.Employees], getEmployees);
 
   const employee = employees[employeeId];
 
@@ -38,14 +52,18 @@ export const EditEmployee = ({
     ["avatar", "email", "name", "surname"]
   );
 
-  //@todo add react query mutation
-  const handleSubmit: EditEmployeeFormProps["onSubmit"] = (employeeData) => {
-    editEmployee({ employeeData, id: employeeId });
+  const handleSubmit: EditEmployeeFormProps["onSubmit"] = async (
+    employeeData
+  ) => {
+    await mutateAsync({ employeeData, id: employeeId });
+    navigation.navigate(ScreenNames.Home);
   };
 
   return (
     <StyledAppContainer>
-      <UILoader status={status}>
+      <UILoader
+        status={isGetEmployeesFetched ? editEmployeeStatus : getEmployeesStatus}
+      >
         <EditEmployeeForm
           onSubmit={handleSubmit}
           initialValues={initialFormData}

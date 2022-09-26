@@ -6,6 +6,8 @@ import {
   EditEmployeeFormProps,
 } from "../../features/employees/components/EditEmployeeForm/EditEmployeeForm";
 import { createEmployee } from "../../features/employees/api/createEmployee";
+import { useMutation } from "@tanstack/react-query";
+import { Queries, queryClient } from "../../queryClient";
 
 export type CreateEmployeeNativeStackScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -13,9 +15,14 @@ export type CreateEmployeeNativeStackScreenProps = NativeStackScreenProps<
 >;
 
 export const CreateEmployee = () => {
-  //@todo add react query mutation
+  const { mutate, isLoading } = useMutation(createEmployee, {
+    onSuccess: () => {
+      queryClient.invalidateQueries([Queries.Employees]);
+    },
+  });
+
   const handleSubmit: EditEmployeeFormProps["onSubmit"] = (employeeData) => {
-    createEmployee({ employeeData });
+    mutate({ employeeData });
   };
 
   return (

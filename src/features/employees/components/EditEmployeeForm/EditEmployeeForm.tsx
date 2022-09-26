@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import { FC } from "react";
-import { View, TextInput, Button } from "react-native";
+import { View, Button, Text } from "react-native";
 import { EditableEmployeeFields } from "../../../../types/entities/Employee";
 import * as Yup from "yup";
 import { FormGroup } from "../../../../components/primitives/FormGroup/FormGroup";

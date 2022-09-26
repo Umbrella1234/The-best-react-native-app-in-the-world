@@ -16,6 +16,8 @@ import { useNavigation } from "@react-navigation/native";
 import { ScreenNames } from "../../../../constants/routing";
 import { EditEmployeeNativeStackScreenProps } from "../../../../screens/Home/EditEmployee";
 import { deleteEmployee } from "../../api/deleteEmployee";
+import { useMutation } from "@tanstack/react-query";
+import { Queries, queryClient } from "../../../../queryClient";
 
 const StyledEmployee = styled.View`
   display: flex;
@@ -43,6 +45,12 @@ type EmployeeListItemProps = {
 };
 
 export const EmployeeListItem: FC<EmployeeListItemProps> = ({ employee }) => {
+  const { mutateAsync } = useMutation(deleteEmployee, {
+    onSuccess: () => {
+      queryClient.invalidateQueries([Queries.Employees]);
+    },
+  });
+
   const navigation =
     useNavigation<EditEmployeeNativeStackScreenProps["navigation"]>();
   const { name, surname, id } = employee;
@@ -83,7 +91,7 @@ export const EmployeeListItem: FC<EmployeeListItemProps> = ({ employee }) => {
   };
 
   const handleDeleteOptionSelection = async () => {
-    await deleteEmployee({ employeeId: id });
+    await mutateAsync({ employeeId: id });
     hideContextMenu();
   };
 

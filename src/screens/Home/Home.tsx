@@ -8,8 +8,14 @@ import { StyledAppContainer } from "../../components/styledComponents/StyledAppC
 import { Button, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { CreateEmployeeNativeStackScreenProps } from "./CreateEmployee";
-import { ScreenNames } from "../../constants/routing";
+import { RootStackParamList, ScreenNames } from "../../constants/routing";
 import styled from "styled-components/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
+export type HomeNativeStackScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  ScreenNames.Home
+>;
 
 const StyledAddEmployeeWrapper = styled.View`
   margin-bottom: 20px;

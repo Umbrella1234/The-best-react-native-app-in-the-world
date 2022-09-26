@@ -6,14 +6,15 @@ import {
   Employee,
   EmployeesMap,
 } from "../../../types/entities/Employee";
+import { delayedPromiseFactoryFn } from "../../../utils/delayedPromiseFactoryFn";
 
 export const createEmployee = async ({
   employeeData,
 }: {
   employeeData: EditableEmployeeFields;
-}) => {
+}): Promise<Employee | null> => {
   const employees = queryClient.getQueryData<EmployeesMap>([Queries.Employees]);
-  if (!employees) return;
+  if (!employees) return null;
 
   const newEmployee: Employee = {
     ...employeeData,
@@ -26,4 +27,5 @@ export const createEmployee = async ({
       [newEmployee.id]: newEmployee,
     })
   );
+  return await delayedPromiseFactoryFn(newEmployee);
 };

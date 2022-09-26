@@ -4,7 +4,7 @@ import { EmployeeListItem } from "../../../features/employees/components/Employe
 
 export type UILoaderProps = {
   /** React-query status. */
-  status: "loading" | "error" | "success";
+  status: "loading" | "error" | "success" | "idle";
   children: ReactNode;
 };
 
@@ -13,7 +13,7 @@ export const UILoader: FC<UILoaderProps> = ({ children, status }) => {
     <View>
       {status === "loading" && <Text>Loading... wait pls</Text>}
       {status === "error" && <Text>Oops, something went wrong</Text>}
-      {status === "success" && children}
+      {["success", "idle"].includes(status) && children}
     </View>
   );
 };
