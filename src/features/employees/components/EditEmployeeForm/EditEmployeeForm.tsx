@@ -81,7 +81,7 @@ export const EditEmployeeForm: FC<EditEmployeeFormProps> = ({
           onChangeText={handleChange("email")}
           onBlur={handleBlur("email")}
           value={values.email}
-          isError={!!(touched.surname && errors.surname)}
+          isError={!!(touched.email && errors.email)}
         />
       </FormGroup>
       <StyledButtonWrapper>
