@@ -8,6 +8,9 @@ import {
 import { createEmployee } from "../../features/employees/api/createEmployee";
 import { useMutation } from "@tanstack/react-query";
 import { Queries, queryClient } from "../../queryClient";
+import { UILoader } from "../../components/primitives/UILoader/UILoader";
+import { useNavigation } from "@react-navigation/native";
+import { HomeNativeStackScreenProps } from "./Home";
 
 export type CreateEmployeeNativeStackScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -15,19 +18,25 @@ export type CreateEmployeeNativeStackScreenProps = NativeStackScreenProps<
 >;
 
 export const CreateEmployee = () => {
-  const { mutate, isLoading } = useMutation(createEmployee, {
+  const navigation = useNavigation<HomeNativeStackScreenProps["navigation"]>();
+  const { mutate, status, mutateAsync } = useMutation(createEmployee, {
     onSuccess: () => {
       queryClient.invalidateQueries([Queries.Employees]);
     },
   });
 
-  const handleSubmit: EditEmployeeFormProps["onSubmit"] = (employeeData) => {
-    mutate({ employeeData });
+  const handleSubmit: EditEmployeeFormProps["onSubmit"] = async (
+    employeeData
+  ) => {
+    await mutateAsync({ employeeData });
+    navigation.navigate(ScreenNames.Home);
   };
 
   return (
     <StyledAppContainer>
-      <EditEmployeeForm onSubmit={handleSubmit} />
+      <UILoader status={status}>
+        <EditEmployeeForm onSubmit={handleSubmit} />
+      </UILoader>
     </StyledAppContainer>
   );
 };

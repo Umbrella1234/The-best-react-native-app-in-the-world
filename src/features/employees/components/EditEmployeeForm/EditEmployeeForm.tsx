@@ -41,41 +41,47 @@ export const EditEmployeeForm: FC<EditEmployeeFormProps> = ({
   initialValues = initialFormState,
   onSubmit,
 }) => {
-  const { isValid, values, handleChange, handleBlur, errors } = useFormik({
+  const {
+    isValid,
+    values,
+    handleChange,
+    handleBlur,
+    errors,
+    submitForm,
+    touched,
+  } = useFormik({
     initialValues,
-    validateOnBlur: true,
     validationSchema: EmployeeSchema,
-    onSubmit: (formData) => {
-      console.log(formData);
-    },
+    validateOnBlur: true,
+    onSubmit,
   });
 
-  const handleSubmit = () => onSubmit(values);
+  const handleSubmit = () => submitForm();
 
   return (
     <View>
-      <FormGroup label="Name" error={errors.name}>
+      <FormGroup label="Name" error={touched.name && errors.name}>
         <StyledTextInput
           onChangeText={handleChange("name")}
           onBlur={handleBlur("name")}
           value={values.name}
-          isError={!!errors.name}
+          isError={!!(touched.name && errors.name)}
         />
       </FormGroup>
-      <FormGroup label="Surname" error={errors.surname}>
+      <FormGroup label="Surname" error={touched.surname && errors.surname}>
         <StyledTextInput
           onChangeText={handleChange("surname")}
           onBlur={handleBlur("surname")}
           value={values.surname}
-          isError={!!errors.surname}
+          isError={!!(touched.surname && errors.surname)}
         />
       </FormGroup>
-      <FormGroup label="Email" error={errors.email}>
+      <FormGroup label="Email" error={touched.email && errors.email}>
         <StyledTextInput
           onChangeText={handleChange("email")}
           onBlur={handleBlur("email")}
           value={values.email}
-          isError={!!errors.email}
+          isError={!!(touched.surname && errors.surname)}
         />
       </FormGroup>
       <StyledButtonWrapper>

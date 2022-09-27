@@ -21,7 +21,7 @@ const StyledErrorText = styled.Text`
 `;
 
 export type FormGroupProps = {
-  error?: string;
+  error?: string | false;
   children: ReactNode;
   label: string;
 };
