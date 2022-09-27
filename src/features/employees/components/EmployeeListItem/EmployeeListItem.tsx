@@ -24,7 +24,7 @@ const StyledEmployee = styled.View`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 20px 15px;
+  padding: 15px;
   border: 1px solid black;
   border-radius: 8px;
 
