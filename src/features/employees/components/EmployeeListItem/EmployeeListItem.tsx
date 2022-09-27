@@ -18,6 +18,7 @@ import { EditEmployeeNativeStackScreenProps } from "../../../../screens/Home/Edi
 import { deleteEmployee } from "../../api/deleteEmployee";
 import { useMutation } from "@tanstack/react-query";
 import { Queries, queryClient } from "../../../../queryClient";
+import { EmployeeListItemDeleteModal } from "./EmployeeListItemDeleteModal";
 
 const StyledEmployee = styled.View`
   display: flex;
@@ -45,15 +46,16 @@ type EmployeeListItemProps = {
 };
 
 export const EmployeeListItem: FC<EmployeeListItemProps> = ({ employee }) => {
-  const { mutateAsync } = useMutation(deleteEmployee, {
+  const { name, surname, id } = employee;
+
+  const { mutate } = useMutation(deleteEmployee, {
     onSuccess: () => {
       queryClient.invalidateQueries([Queries.Employees]);
     },
   });
-
   const navigation =
     useNavigation<EditEmployeeNativeStackScreenProps["navigation"]>();
-  const { name, surname, id } = employee;
+
   const [menuCoords, setMenuCoords] = useState<
     ContextMenuProps["coords"] | null
   >(null);
@@ -61,7 +63,11 @@ export const EmployeeListItem: FC<EmployeeListItemProps> = ({ employee }) => {
     width: number;
     height: number;
   } | null>(null);
+  const [shouldShowDeleteModal, setShouldShowDeleteModal] = useState(false);
+
   const iconRef = useRef<any>(null);
+
+  const userDisplayName = `${name} ${surname}`;
 
   const hideContextMenu = () => {
     setMenuCoords(null);
@@ -91,15 +97,20 @@ export const EmployeeListItem: FC<EmployeeListItemProps> = ({ employee }) => {
   };
 
   const handleDeleteOptionSelection = async () => {
-    await mutateAsync({ employeeId: id });
     hideContextMenu();
+    setShouldShowDeleteModal(true);
+  };
+
+  const hideDeleteModal = () => setShouldShowDeleteModal(false);
+
+  const handleDeleteDialogConfirm = async () => {
+    hideDeleteModal();
+    mutate({ employeeId: id });
   };
 
   return (
     <StyledEmployee>
-      <StyledEmployeeInfo>
-        {name} {surname}
-      </StyledEmployeeInfo>
+      <StyledEmployeeInfo>{userDisplayName}</StyledEmployeeInfo>
       <StyledEmployeeMenuIconWrapper ref={iconRef}>
         <TouchableOpacity onPress={handleContextMenuIconClick}>
           <MaterialCommunityIcons
@@ -122,6 +133,14 @@ export const EmployeeListItem: FC<EmployeeListItemProps> = ({ employee }) => {
             onPress={handleDeleteOptionSelection}
           />
         </ContextMenu>
+      )}
+      {shouldShowDeleteModal && (
+        <EmployeeListItemDeleteModal
+          userName={userDisplayName}
+          onDeleteDialogCancel={hideDeleteModal}
+          onDeleteDialogConfirm={handleDeleteDialogConfirm}
+          onOverlayPress={hideDeleteModal}
+        />
       )}
     </StyledEmployee>
   );

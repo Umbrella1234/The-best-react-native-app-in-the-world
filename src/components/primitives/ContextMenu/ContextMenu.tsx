@@ -1,21 +1,16 @@
 import { FC, ReactNode } from "react";
-import { BlackPortal } from "react-native-portal";
-import { View, TouchableWithoutFeedback } from "react-native";
+import { Modal } from "react-native";
 import styled from "styled-components/native";
-import { PortalHosts } from "../../../constants/portals";
+import {
+  FullScreenOverlay,
+  FullScreenOverlayContent,
+} from "../FullScreenOverlay/FullScreenOverlay";
 
 type MenuCoords = { right: number; top: number };
 
-const StyledContextMenuOverlay = styled.View`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: rgba(212, 209, 209, 0.569);
-`;
-
 const StyledContextMenuWrapper = styled.View<MenuCoords>`
   position: absolute;
-  width: 150px;
+  min-width: 150px;
   border-radius: 8px;
   right: ${(props) => `${props.right}px`};
   top: ${(props) => `${props.top}px`};
@@ -34,20 +29,14 @@ export const ContextMenu: FC<ContextMenuProps> = ({
   onOverlayPress,
 }) => {
   return (
-    //@ts-ignore
-    <BlackPortal name={PortalHosts.AppRoot}>
-      <TouchableWithoutFeedback onPress={onOverlayPress}>
-        <StyledContextMenuOverlay>
-          <StyledContextMenuWrapper
-            right={right}
-            top={top}
-            onStartShouldSetResponder={() => true}
-            onTouchEnd={(e: any) => e.stopPropagation()}
-          >
+    <Modal transparent={true} animationType="fade">
+      <FullScreenOverlay onOverlayPress={onOverlayPress}>
+        <FullScreenOverlayContent>
+          <StyledContextMenuWrapper right={right} top={top}>
             {children}
           </StyledContextMenuWrapper>
-        </StyledContextMenuOverlay>
-      </TouchableWithoutFeedback>
-    </BlackPortal>
+        </FullScreenOverlayContent>
+      </FullScreenOverlay>
+    </Modal>
   );
 };
